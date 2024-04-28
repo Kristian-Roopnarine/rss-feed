@@ -29,7 +29,9 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/v1/readiness", handlerHealthCheck)
 	mux.HandleFunc("GET /api/v1/err", handlerErrorCheck)
+
 	mux.HandleFunc("POST /api/v1/users", apiConfig.handlerCreateUser)
+	mux.HandleFunc("GET /api/v1/users", apiConfig.handlerGetUser)
 	corsMux := corsMiddleware(mux)
 	server := &http.Server{
 		Addr:    ":" + port,

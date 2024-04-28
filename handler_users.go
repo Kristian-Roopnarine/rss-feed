@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Kristian-Roopnarine/rss/internal/auth"
 	"github.com/Kristian-Roopnarine/rss/internal/database"
 	"github.com/google/uuid"
 )
@@ -31,5 +32,21 @@ func (cfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	respondWithJSON(w, http.StatusCreated, databaseUserToUser(user))
+
+}
+
+func (cfg *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request) {
+	apiKey, err := auth.GetApiKey(r.Header)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	user, err := cfg.DB.GetUserByApiKey(r.Context(), apiKey)
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "error finding user")
+		return
+	}
+	respondWithJSON(w, http.StatusFound, databaseUserToUser(user))
 
 }
