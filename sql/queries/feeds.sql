@@ -6,3 +6,15 @@ RETURNING *;
 -- name: GetAllFeeds :many
 SELECT *
 FROM feeds;
+
+-- name: GetNextFeedsToFetch :many
+select *
+from feeds
+order by last_fetched_at asc
+limit @number_of_results;
+
+-- name: MarkFeedFetched :one
+UPDATE feeds
+SET updated_at = @new_time, last_fetched_at = @new_time
+WHERE id = @feed_id
+RETURNING *;

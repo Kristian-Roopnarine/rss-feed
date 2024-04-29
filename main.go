@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/Kristian-Roopnarine/rss/internal/database"
 	"github.com/joho/godotenv"
@@ -44,6 +45,9 @@ func main() {
 		Addr:    ":" + port,
 		Handler: corsMux,
 	}
+
+	concurrencyResults := 10
+	go Scraper(dbQueries, concurrencyResults, time.Minute)
 	fmt.Printf("Listening on port : %v", port)
 	log.Fatal(server.ListenAndServe())
 }
