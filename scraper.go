@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Kristian-Roopnarine/rss/internal/database"
+	"github.com/google/uuid"
 )
 
 func Scraper(db *database.Queries, concurrency int, waitTime time.Duration) {
@@ -47,6 +48,26 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 		return
 	}
 	for _, item := range feedData.Channel.Item {
-		log.Println("Found post", item.Title)
+		pubAt, err := time.Parse(time.RFC1123Z, item.PubDate)
+		if err != nil {
+			log.Printf("Error converting timestamp for url %v : %v\n", item.Link, err)
+			continue
+
+		}
+		post, err := db.CreatePost(context.Background(), database.CreatePostParams{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now().UTC(),
+			UpdatedAt:   time.Now().UTC(),
+			Title:       item.Title,
+			Url:         item.Link,
+			Description: item.Description,
+			PublishedAt: pubAt,
+			FeedID:      feed.ID,
+		})
+		if err != nil {
+			log.Println("Error saving post to db\n", err)
+			continue
+		}
+		log.Println("Saved post: ", post.Title)
 	}
 }

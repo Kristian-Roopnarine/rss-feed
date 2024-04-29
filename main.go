@@ -40,6 +40,8 @@ func main() {
 	mux.HandleFunc("POST /api/v1/feed_follows", apiConfig.handlerCreateFeedFollow)
 	mux.HandleFunc("DELETE /api/v1/feed_follows/{feedFollowID}", apiConfig.handlerDeleteFeedFollow)
 	mux.HandleFunc("GET /api/v1/feed_follows", apiConfig.handlerGetUserFeedFollows)
+
+	mux.HandleFunc("GET /api/v1/posts", apiConfig.handlerGetUserPosts)
 	corsMux := corsMiddleware(mux)
 	server := &http.Server{
 		Addr:    ":" + port,

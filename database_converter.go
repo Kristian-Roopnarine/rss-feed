@@ -66,3 +66,27 @@ func databaseFeedFollowToFeedFollow(feedFollow database.FeedFollow) FeedFollow {
 		FeedId:    feedFollow.FeedID,
 	}
 }
+
+type Post struct {
+	ID          uuid.UUID `json:"id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	Title       string    `json:"title"`
+	URL         string    `json:"url"`
+	Description string    `json:"description"`
+	PublishedAt time.Time `json:"published_at"`
+	FeedId      uuid.UUID `json:"feed_id"`
+}
+
+func databasePostToPost(post database.GetPostsByUserRow) Post {
+	return Post{
+		ID:          post.ID,
+		CreatedAt:   post.CreatedAt,
+		UpdatedAt:   post.UpdatedAt,
+		Title:       post.Title,
+		URL:         post.Url,
+		Description: post.Description,
+		PublishedAt: post.PublishedAt,
+		FeedId:      post.FeedID,
+	}
+}
